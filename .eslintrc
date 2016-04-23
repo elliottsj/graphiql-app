@@ -73,7 +73,6 @@
     "space-unary-ops": [2, { "words": true, "nonwords": false }],
     "yoda": [2, "never"],
 
-    "no-script-url": 0,
     "no-console": 0
   }
 }
