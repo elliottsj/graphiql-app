@@ -24,6 +24,7 @@ export default class App extends React.Component {
           name: null,
           headers: {},
           endpoint: '',
+          responseKey: '',
           method: 'post'
         }
       ]
@@ -69,6 +70,7 @@ export default class App extends React.Component {
       tabs: [...this.state.tabs, {
         headers: currentTab.headers,
         endpoint: currentTab.endpoint,
+        responseKey: currentTab.responseKey,
         method: currentTab.method
       }],
       currentTabKey: newTabKey
@@ -96,6 +98,7 @@ export default class App extends React.Component {
           name: null,
           headers: {},
           endpoint: '',
+          responseKey: '',
           method: 'post'
         }
       ];
@@ -147,7 +150,7 @@ export default class App extends React.Component {
       'Content-Type': 'application/json'
     };
 
-    const { endpoint, method, headers } = this.getCurrentTab();
+    const { endpoint, method, headers, responseKey } = this.getCurrentTab();
 
     if (method == "get") {
       return fetch(endpoint + "?query=" + encodeURIComponent(graphQLParams['query']) + "&variables=" + encodeURIComponent(graphQLParams['variables']), {
@@ -160,7 +163,9 @@ export default class App extends React.Component {
       method: method,
       headers: Object.assign({}, defaultHeaders, headers),
       body: JSON.stringify(graphQLParams)
-    }).then(response => response.json());
+    })
+    .then(response => response.json())
+    .then(json => responseKey ? json[responseKey] : json);
   }
 
   handleChange(field, eOrKey, e) {
@@ -240,6 +245,15 @@ export default class App extends React.Component {
             <label htmlFor="endpoint">GraphQL Endpoint</label>
             <input type="text" name="endpoint"
               value={currentTab.endpoint} onChange={this.handleChange.bind(this, 'endpoint')} />
+          </div>
+          <div className="field">
+            <label htmlFor="responseKey">GraphQL Response Key</label>
+            <input
+              type="text"
+              name="responseKey"
+              value={currentTab.responseKey}
+              onChange={this.handleChange.bind(this, 'responseKey')}
+            />
           </div>
           <div className="field">
             <label htmlFor="method">Method</label>
